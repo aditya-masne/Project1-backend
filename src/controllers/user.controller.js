@@ -3,6 +3,7 @@ import {ApiError} from "../utils/ApiError.js"
 import {User} from "../models/user.model.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import cookieParser from "cookie-parser"
 
 
 const generateAccessAndRefreshTokens = async(userId) =>{
@@ -21,7 +22,6 @@ const generateAccessAndRefreshTokens = async(userId) =>{
         throw new ApiError(500, "Something went wrong while generating refresh and access token")
     }
 }
-
 
 const registerUser = asyncHandler( async (req, res) => {
     // get user details from frontend
@@ -110,8 +110,12 @@ const loginUser = asyncHandler( async (req, res) => {
 
     const {email, username, password } = req.body
 
-    if(!username || !email){
-        throw new ApiError(400,"username or password is required")
+    // console.log(email);
+    // console.log(username);
+    // console.log(password);
+
+    if(!(username || email)){
+        throw new ApiError(400,"username or email is required")
     }
 
     const user = await User.findOne({
@@ -129,6 +133,9 @@ const loginUser = asyncHandler( async (req, res) => {
     }
 
     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
+
+    // console.log(accessToken);
+    // console.log(refreshToken);
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
