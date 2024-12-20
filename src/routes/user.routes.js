@@ -3,6 +3,7 @@ import { loginUser, logoutUser, registerUser, refreshAccessToken } from "../cont
 import {upload} from "../middlewares/multer.middleware.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 import cookieParser from "cookie-parser"
+import { summarizer } from "../controllers/summarize.controller.js";
 
 
 
@@ -26,7 +27,10 @@ router.route("/login").post(loginUser)
 
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser)
+
 router.route("/refresh-token").post(refreshAccessToken)
+
+router.route("/summarize").post(summarizer)
 
 
 export default router
